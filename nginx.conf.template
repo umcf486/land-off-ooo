@@ -39,15 +39,14 @@ http {
     # - تمام آی‌پی‌های IPv4 و IPv6 به 🌳✨ تبدیل می‌شوند
     # - تمام موقعیت‌های جغرافیایی به 🌳 Land of Ooo تبدیل می‌شوند
     # - تمام کدهای کشور به OOO تبدیل می‌شوند
-    # - کلیدهای JSON مربوط به موقعیت نیز تغییر می‌کنند
     # ============================================================
 
-    # ====== تبدیل آی‌پی‌ها (با regex) ======
+    # تبدیل آی‌پی‌ها (با regex)
     sub_filter '\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b' '🌳✨';
     sub_filter '\b([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b' '🌳✨';
     sub_filter '\b([0-9a-fA-F]{1,4}:){1,7}:[0-9a-fA-F]{0,4}\b' '🌳✨';
 
-    # ====== تبدیل موقعیت‌های جغرافیایی ======
+    # تبدیل موقعیت‌های جغرافیایی
     sub_filter 'Tehran' '🌳 Land of Ooo';
     sub_filter 'Iran' '🌳 Land of Ooo';
     sub_filter 'IR' 'OOO';
@@ -56,10 +55,11 @@ http {
     sub_filter 'Asia/Tehran' 'OOO Timezone';
     sub_filter 'iran' '🌳 Land of Ooo';
     sub_filter 'tehran' '🌳 Land of Ooo';
+    sub_filter 'IR' 'OOO';
     sub_filter 'IRN' 'OOO';
     sub_filter 'Islamic Republic of Iran' '🌳 Land of Ooo';
 
-    # ====== تبدیل کلیدهای JSON مربوط به موقعیت ======
+    # تبدیل کلمات کلیدی در JSON
     sub_filter '"ip"' '"ooo_ip"';
     sub_filter '"city"' '"ooo_city"';
     sub_filter '"region"' '"ooo_region"';
