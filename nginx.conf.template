@@ -1,0 +1,118 @@
+worker_processes 1;
+events { worker_connections 2048; }
+
+http {
+    # ============================================================
+    # 🔍 تشخیص IP واقعی از پشت کلادفلر / ArvanCloud
+    # ============================================================
+    real_ip_header CF-Connecting-IP;
+    real_ip_recursive on;
+
+    # رنج‌های IPv4 کلادفلر
+    set_real_ip_from 173.245.48.0/20;
+    set_real_ip_from 103.21.244.0/22;
+    set_real_ip_from 103.22.200.0/22;
+    set_real_ip_from 103.31.4.0/22;
+    set_real_ip_from 141.101.64.0/18;
+    set_real_ip_from 108.162.192.0/18;
+    set_real_ip_from 190.93.240.0/20;
+    set_real_ip_from 188.114.96.0/20;
+    set_real_ip_from 197.234.240.0/22;
+    set_real_ip_from 198.41.128.0/17;
+    set_real_ip_from 162.158.0.0/15;
+    set_real_ip_from 104.16.0.0/13;
+    set_real_ip_from 104.24.0.0/14;
+    set_real_ip_from 172.64.0.0/13;
+    set_real_ip_from 131.0.72.0/22;
+
+    # رنج‌های IPv6 کلادفلر
+    set_real_ip_from 2400:cb00::/32;
+    set_real_ip_from 2606:4700::/32;
+    set_real_ip_from 2803:f800::/32;
+    set_real_ip_from 2405:b500::/32;
+    set_real_ip_from 2405:8100::/32;
+    set_real_ip_from 2a06:98c0::/29;
+    set_real_ip_from 2c0f:f248::/32;
+
+    # ============================================================
+    # 🌳 فعال‌سازی «سرزمین اوو» (Land of Ooo)
+    # ============================================================
+    # تمام عبارات مربوط به موقعیت جغرافیایی در پاسخ‌های HTML و JSON
+    # به «🌳 Land of Ooo» تبدیل می‌شوند.
+    # ============================================================
+
+    # تنظیمات سراسری sub_filter
+    sub_filter 'Tehran' '🌳 Land of Ooo';
+    sub_filter 'Iran' '🌳 Land of Ooo';
+    sub_filter 'IR' 'OOO';
+    sub_filter 'Tehran Province' '🌳 Land of Ooo';
+    sub_filter 'Islamabad' '🌳 Land of Ooo';
+    sub_filter 'Asia/Tehran' 'OOO Timezone';
+    sub_filter 'iran' '🌳 Land of Ooo';
+    sub_filter 'tehran' '🌳 Land of Ooo';
+    sub_filter_once off;
+
+    server {
+        listen ${NGINX_PORT};
+
+        # ============================================================
+        # 📊 پنل مدیریت 3x-ui
+        # ============================================================
+        location /managepanel/ {
+            proxy_pass http://127.0.0.1:2053/managepanel/;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            sub_filter_types text/html application/json;
+        }
+
+        # ============================================================
+        # 📡 ساب‌لینک (Subscription)
+        # ============================================================
+        location /sub/ {
+            proxy_pass http://127.0.0.1:2096/sub/;
+            proxy_http_version 1.1;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # ============================================================
+        # 🔌 اینباندهای 1 تا 50
+        # ============================================================
+        location ~ ^/in([0-9]+)$ {
+            set $in_port 800$1;
+            proxy_pass http://127.0.0.1:${in_port};
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+            sub_filter_types text/html application/json;
+        }
+
+        # ============================================================
+        # 🌐 مسیر عمومی (سایت‌های چک‌کننده آی‌پی)
+        # ============================================================
+        location / {
+            proxy_pass http://127.0.0.1:8080;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+
+            sub_filter_types text/html application/json;
+        }
+    }
+}
