@@ -1,27 +1,29 @@
-FROM alpine:3.19
+#!/bin/bash
+set -e
 
-RUN apk add --no-cache \
-    curl \
-    bash \
-    ca-certificates \
-    socat \
-    tzdata \
-    sqlite \
-    nginx \
-    gettext \
-    && ln -sf /usr/share/zoneinfo/Asia/Tehran /etc/localtime
+echo "🌳 ========================================"
+echo "🌳   LAND OF OOO DATACENTER"
+echo "🌳   Location will show as 🌳 Land of Ooo"
+echo "🌳   IP stays real"
+echo "🌳 ========================================"
 
-RUN curl -L https://github.com/mhsanaei/3x-ui/releases/download/v3.5.0/x-ui-linux-amd64.tar.gz -o /tmp/x-ui.tar.gz \
-    && tar -xzf /tmp/x-ui.tar.gz -C /usr/local/ \
-    && rm /tmp/x-ui.tar.gz \
-    && chmod +x /usr/local/x-ui/x-ui
+export NGINX_PORT=3000
 
-RUN mkdir -p /etc/x-ui /var/log/x-ui
+cd /usr/local/x-ui
 
-COPY nginx.conf.template /etc/nginx/nginx.conf.template
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
+echo "📊 Configuring 3x-ui panel..."
+./x-ui setting -port 2053 -webBasePath /managepanel/ || true
 
-EXPOSE 3000 2053 2096 8080 8001-8050
+echo "📄 Generating nginx.conf..."
+envsubst '${NGINX_PORT}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
-CMD ["/start.sh"]
+echo "🔍 Testing Nginx configuration..."
+nginx -t
+
+echo "🚀 Starting 3x-ui..."
+./x-ui &
+
+sleep 3
+
+echo "🌳 Starting Nginx..."
+exec nginx -g "daemon off;"
