@@ -3,8 +3,9 @@ set -e
 
 echo "🌳 Starting Land of Ooo Datacenter..."
 echo "========================================"
-echo "  X-UI + Nginx with 'Land of Ooo' mode"
+echo "  X-UI + Nginx with 'All IPs to Ooo' mode"
 echo "  Real-IP: Cloudflare / ArvanCloud"
+echo "  Every IP will be shown as 🌳✨"
 echo "========================================"
 
 # ============================================================
@@ -21,6 +22,13 @@ echo "📊 Configuring 3x-ui panel..."
 ./x-ui setting -port 2053 -webBasePath /managepanel/ || true
 
 # ============================================================
+# 🔍 اطمینان از نصب ماژول‌های Nginx
+# ============================================================
+echo "🔍 Checking Nginx modules..."
+nginx -V 2>&1 | grep -q "http_sub_module" || echo "⚠️ sub_filter module may not be installed"
+nginx -V 2>&1 | grep -q "http_ssl_module" || echo "⚠️ ssl module may not be installed"
+
+# ============================================================
 # 📄 تولید nginx.conf از template با متغیرها
 # ============================================================
 echo "📄 Generating nginx.conf with Ooo mode..."
@@ -35,8 +43,8 @@ echo "🚀 Starting 3x-ui..."
 sleep 3
 
 # ============================================================
-# 🌳 اجرای Nginx با تنظیمات «سرزمین اوو»
+# 🌳 اجرای Nginx با تنظیمات «همه‌ی آی‌پی‌ها به اوو»
 # ============================================================
-echo "🌳 Starting Nginx with 'Land of Ooo' filters..."
+echo "🌳 Starting Nginx with 'All IPs to Ooo' filters..."
 nginx -t
 exec nginx -g "daemon off;"
