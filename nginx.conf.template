@@ -24,8 +24,7 @@ http {
     set_real_ip_from 104.24.0.0/14;
     set_real_ip_from 172.64.0.0/13;
     set_real_ip_from 131.0.72.0/22;
-
-    # رنج‌های IPv6 کلادفلر
+    # IPv6
     set_real_ip_from 2400:cb00::/32;
     set_real_ip_from 2606:4700::/32;
     set_real_ip_from 2803:f800::/32;
@@ -35,13 +34,19 @@ http {
     set_real_ip_from 2c0f:f248::/32;
 
     # ============================================================
-    # 🌳 فعال‌سازی «سرزمین اوو» (Land of Ooo)
+    # 🌳 تبدیل همه‌ی آی‌پی‌ها و موقعیت‌ها به «سرزمین اوو»
     # ============================================================
-    # تمام عبارات مربوط به موقعیت جغرافیایی در پاسخ‌های HTML و JSON
-    # به «🌳 Land of Ooo» تبدیل می‌شوند.
+    # - تمام آی‌پی‌های IPv4 و IPv6 به 🌳✨ تبدیل می‌شوند
+    # - تمام موقعیت‌های جغرافیایی به 🌳 Land of Ooo تبدیل می‌شوند
+    # - تمام کدهای کشور به OOO تبدیل می‌شوند
     # ============================================================
 
-    # تنظیمات سراسری sub_filter
+    # تبدیل آی‌پی‌ها (با regex)
+    sub_filter '\b\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\b' '🌳✨';
+    sub_filter '\b([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b' '🌳✨';
+    sub_filter '\b([0-9a-fA-F]{1,4}:){1,7}:[0-9a-fA-F]{0,4}\b' '🌳✨';
+
+    # تبدیل موقعیت‌های جغرافیایی
     sub_filter 'Tehran' '🌳 Land of Ooo';
     sub_filter 'Iran' '🌳 Land of Ooo';
     sub_filter 'IR' 'OOO';
@@ -50,6 +55,18 @@ http {
     sub_filter 'Asia/Tehran' 'OOO Timezone';
     sub_filter 'iran' '🌳 Land of Ooo';
     sub_filter 'tehran' '🌳 Land of Ooo';
+    sub_filter 'IR' 'OOO';
+    sub_filter 'IRN' 'OOO';
+    sub_filter 'Islamic Republic of Iran' '🌳 Land of Ooo';
+
+    # تبدیل کلمات کلیدی در JSON
+    sub_filter '"ip"' '"ooo_ip"';
+    sub_filter '"city"' '"ooo_city"';
+    sub_filter '"region"' '"ooo_region"';
+    sub_filter '"country"' '"ooo_country"';
+    sub_filter '"countryCode"' '"ooo_countryCode"';
+    sub_filter '"loc"' '"ooo_loc"';
+
     sub_filter_once off;
 
     server {
@@ -100,7 +117,7 @@ http {
         }
 
         # ============================================================
-        # 🌐 مسیر عمومی (سایت‌های چک‌کننده آی‌پی)
+        # 🌐 مسیر عمومی (همه‌ی سایت‌ها)
         # ============================================================
         location / {
             proxy_pass http://127.0.0.1:8080;
