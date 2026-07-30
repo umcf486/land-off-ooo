@@ -36,6 +36,7 @@ http {
     # 🌳 غیرفعال کردن فشرده‌سازی برای sub_filter
     # ============================================================
     gzip off;
+    proxy_set_header Accept-Encoding "";
 
     server {
         listen ${NGINX_PORT};
@@ -53,12 +54,15 @@ http {
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
 
-            proxy_set_header Accept-Encoding "";
+            # 🔥 sub_filter فقط برای موقعیت‌ها
             sub_filter_types text/html application/json;
             sub_filter 'Netherlands' '🌳 Land of Ooo';
             sub_filter 'Iran' '🌳 Land of Ooo';
             sub_filter 'Tehran' '🌳 Land of Ooo';
             sub_filter 'IR' 'OOO';
+            sub_filter 'Amsterdam' '🌳 Land of Ooo';
+            sub_filter 'NL' 'OOO';
+            sub_filter 'IRN' 'OOO';
             sub_filter_once off;
         }
 
@@ -73,14 +77,16 @@ http {
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
 
-            proxy_set_header Accept-Encoding "";
             sub_filter_types text/html application/json;
             sub_filter 'Netherlands' '🌳 Land of Ooo';
+            sub_filter 'Iran' '🌳 Land of Ooo';
+            sub_filter 'Tehran' '🌳 Land of Ooo';
+            sub_filter 'IR' 'OOO';
             sub_filter_once off;
         }
 
         # ============================================================
-        # 🔌 اینباندهای 1 تا 50 (رفع کامل)
+        # 🔌 اینباندهای 1 تا 50
         # ============================================================
         location ~ ^/in([0-9]+)$ {
             set $in_port 800$1;
@@ -91,17 +97,14 @@ http {
             proxy_set_header Host $host;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-            proxy_set_header X-Forwarded-Proto $scheme;
 
-            # 🔥 غیرفعال کردن فشرده‌سازی
-            proxy_set_header Accept-Encoding "";
             sub_filter_types text/html application/json;
             sub_filter 'Netherlands' '🌳 Land of Ooo';
             sub_filter_once off;
         }
 
         # ============================================================
-        # 🌐 مسیر عمومی (همه‌ی سایت‌ها)
+        # 🌐 مسیر عمومی (همه‌ی سایت‌ها — اینجا اصلی‌ترین جاست)
         # ============================================================
         location / {
             proxy_pass http://127.0.0.1:8080;
@@ -113,13 +116,15 @@ http {
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
 
-            proxy_set_header Accept-Encoding "";
+            # 🔥 sub_filter برای همه‌ی پاسخ‌ها
             sub_filter_types text/html application/json text/plain;
             sub_filter 'Netherlands' '🌳 Land of Ooo';
             sub_filter 'Iran' '🌳 Land of Ooo';
             sub_filter 'Tehran' '🌳 Land of Ooo';
             sub_filter 'IR' 'OOO';
             sub_filter 'Amsterdam' '🌳 Land of Ooo';
+            sub_filter 'NL' 'OOO';
+            sub_filter 'IRN' 'OOO';
             sub_filter_once off;
         }
     }
