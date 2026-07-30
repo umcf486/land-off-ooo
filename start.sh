@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
 
-echo "🌳 Starting Land of Ooo Datacenter..."
-echo "========================================"
-echo "  X-UI + Nginx with 'Land of Ooo' mode"
-echo "  Real-IP: Cloudflare / ArvanCloud"
-echo "========================================"
+echo "🌳 ========================================"
+echo "🌳   LAND OF OOO DATACENTER"
+echo "🌳   All IPs will show as 🌳✨"
+echo "🌳   All locations will show as 🌳 Land of Ooo"
+echo "🌳 ========================================"
 
 # ============================================================
 # 🔧 تنظیم پورت داخلی Nginx برای Railway
@@ -27,6 +27,12 @@ echo "📄 Generating nginx.conf with Ooo mode..."
 envsubst '${NGINX_PORT}' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
 
 # ============================================================
+# 🔍 بررسی Nginx
+# ============================================================
+echo "🔍 Testing Nginx configuration..."
+nginx -t
+
+# ============================================================
 # 🚀 اجرای 3x-ui در پس‌زمینه
 # ============================================================
 echo "🚀 Starting 3x-ui..."
@@ -35,8 +41,7 @@ echo "🚀 Starting 3x-ui..."
 sleep 3
 
 # ============================================================
-# 🌳 اجرای Nginx با تنظیمات «سرزمین اوو»
+# 🌳 اجرای Nginx با تنظیمات «همه‌ی آی‌پی‌ها به اوو»
 # ============================================================
-echo "🌳 Starting Nginx with 'Land of Ooo' filters..."
-nginx -t
+echo "🌳 Starting Nginx with 'All IPs to Ooo' filters..."
 exec nginx -g "daemon off;"
