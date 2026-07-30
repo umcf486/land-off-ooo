@@ -1,7 +1,7 @@
 FROM alpine:3.19
 
 # ============================================================
-# نصب پیش‌نیازها
+# نصب پیش‌نیازها (بدون nginx-mod-http-sub)
 # ============================================================
 RUN apk add --no-cache \
     curl \
@@ -12,7 +12,6 @@ RUN apk add --no-cache \
     sqlite \
     nginx \
     nginx-mod-stream \
-    nginx-mod-http-sub \
     gettext \
     && ln -sf /usr/share/zoneinfo/Asia/Tehran /etc/localtime
 
@@ -23,7 +22,6 @@ RUN curl -L https://github.com/mhsanaei/3x-ui/releases/download/v3.5.0/x-ui-linu
     && tar -xzf /tmp/x-ui.tar.gz -C /usr/local/ \
     && rm /tmp/x-ui.tar.gz \
     && chmod +x /usr/local/x-ui/x-ui
-
 RUN mkdir -p /etc/x-ui /var/log/x-ui
 
 # ============================================================
